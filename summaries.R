@@ -6,17 +6,15 @@ summary_Portfolio <- pnl_data %>%
 Current_nav <- pnl_data %>%
   filter(Fecha == the_date) %>%
   arrange(variable) %>%
-  filter(variable %in% c('RentDiaria','PorcRentDiaria','PatFamiliaFinal'))
+  filter(variable %in% c('RentDiaria','PorcRentDiaria','PatFamiliaFinal')) %>%
+  select(NombreFamilia,variable,value) %>%
+  dcast(NombreFamilia~variable)
 
-summary_positions <- bulk_data %>%
+summary_positions <- bulk_data_data %>%
   filter(Periodo == the_date) %>%
-  filter(variable == 'Exposure' & value !=0) %>%
-  mutate(dir = ifelse())
-  group_by(AT13) %>%
-  summarize(sum(value))
+  dcast(AT13~variable,fun.aggregate = sum) %>%
+  mutate(palanca = Exposure )
 
 summary_positions_detail <- bulk_data %>%
   filter(Periodo == the_date) %>%
-  filter(variable == 'Exposure' & value !=0) %>%
-  group_by(AT12) %>%
-  summarize(sum(value))
+  dcast(AT13+AT12~variable,fun.aggregate = sum)
