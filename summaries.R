@@ -88,6 +88,7 @@ details_by_assets <- rbind( details_by_assets,
                     summarize(value = sum(value)) %>%
                     mutate(variable = 'Resultado')
 )
+
 library(reshape2)
 details_by_assets <- dcast(details_by_assets,AT12+AT13 ~ variable,fun.aggregate = sum) %>%
   select(AT12,AT13,Exposure,Resultado,Longs,Shorts) %>%
@@ -99,10 +100,19 @@ details <- dcast(details,AT13 ~ variable,fun.aggregate = sum) %>%
 
 leverage_metrics <- list()
 leverage_metrics$total_expo <- sum(details$Exposure)
+
 leverage_metrics$nav <- bulk_data %>%
   filter(variable == 'Valuacion' & Periodo == the_date) %>% 
   group_by() %>%summarise(value = sum(value))
 leverage_metrics$ratio <- with(leverage_metrics,total_expo / nav)
+
+leverage_metrics$non_treasuries_expo <- bulk_data %>%
+  filter(AT12 != "Short Term Gov Inv Grade Bond" & 
+           variable == 'Exposure' & Periodo == the_date) %>%
+  summarize(sum(value))
+
+leverage_metrics$leverage_non_treasuries <- with(leverage_metrics,non_treasuries_expo / nav)
+
 
 leverage_metrics$margin <-  bulk_data %>%
   filter(variable == 'Valuacion' & Periodo == the_date & AT12 == "Cash Margin Accounts") %>% 
