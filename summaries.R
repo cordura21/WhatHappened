@@ -142,4 +142,11 @@ View(bulk_data %>%
        arrange(desc(value))  %>%
        filter(row_number() == 1) )
 
+View(bulk_data %>%
+       filter(variable  == 'Resultado') %>%
+       group_by(AT12,Periodo) %>%
+       summarise(value = sum(value)) %>%
+       arrange(value)  %>%
+       filter(row_number() == 1) )
+
 
