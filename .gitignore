@@ -12,6 +12,7 @@
 *.yaml
 *.pdf
 *.numbers
+*.html
 
 # R Specific     #
 ###################
