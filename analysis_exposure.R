@@ -1,4 +1,4 @@
-familia <- 'TOTAL T+ L'
+familia <- 'VIX + STRANGLES'
 report_date <- '2015-12-22'
 
 
@@ -33,3 +33,22 @@ mutate( perc_margin = round(Margin / Valuacion * 100,2)) %>%
 
 library(formattable)
 daily_data %>% filter( perc_expo >= 1) %>% formattable()
+
+bulk_data %>%
+  filter( Periodo == report_date) %>%
+  filter(CarteraNom %in% carteras$CarteraNom) %>%
+  filter(TipoNombre %in% c('Call Options', 'Put Options')) %>%
+  arrange(CarteraNom,abs(Cantidad)) %>%
+  group_by(CarteraNom, TipoNombre) %>%
+  summarise(net_Options = sum (Cantidad)) %>%
+  select(CarteraNom,TipoNombre, net_Options) %>%
+            formattable()
+  
+bulk_data %>%
+  filter( Periodo == report_date) %>%
+  filter(CarteraNom %in% carteras$CarteraNom) %>%
+  filter(TipoNombre %in% c('Call Options', 'Put Options')) %>%
+  arrange(CarteraNom,abs(Cantidad)) %>%
+  select(CarteraNom,EspecieNombre, Cantidad) %>%
+  formattable()
+
