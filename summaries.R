@@ -22,7 +22,7 @@ details <- rbind( details,
 )
 
 details <- rbind( details,
-                  bulk_data %>% filter(Periodo == the_date) %>%
+                  bulk_data %>% filter(Periodo == the_date$end) %>%
                     filter(variable  == 'Resultado') %>%
                     group_by(AT13) %>%
                     summarize(value = sum(value)) %>%
@@ -78,8 +78,8 @@ leverage_metrics$ratio <- with(leverage_metrics,total_expo / nav)
 
 leverage_metrics$non_treasuries_expo <- bulk_data %>%
   filter(AT12 != "Short Term Gov Inv Grade Bond" & 
-           variable == 'Exposure' & Periodo == the_date) %>%
-  summarize(sum(value))
+           variable == 'Exposure' & Periodo == the_date$end) %>%
+  summarise(sum(value))
 
 leverage_metrics$leverage_non_treasuries <- with(leverage_metrics,non_treasuries_expo / nav)
 
@@ -90,9 +90,3 @@ leverage_metrics$margin <-  bulk_data %>%
 
 leverage_metrics$margin_to_equity <- with(leverage_metrics,margin / nav)
 
-
-periodic_stats <- bulk_data %>%
-  select(Periodo,variable,the_date$end) %>%
-  dcast(Periodo ~ variable,fun.aggregate = sum) %>%
-  tbl_df() %>%
-  summary()
